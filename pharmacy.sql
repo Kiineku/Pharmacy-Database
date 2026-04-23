@@ -18,11 +18,19 @@ CREATE TABLE patient(
 	phone VARCHAR(20),
 	address TEXT,
 	medical_history TEXT,
-	insurance VARCHAR(50),
+	insurance VARCHAR(50)
 );
 
 -- Employee
-CREATE TABLE employee();
+CREATE TABLE employee(
+	employee_id SERIAL PRIMARY KEY,
+	fname VARCHAR(20),
+	lname VARCHAR(20),
+	dob DATE,
+	phone VARCHAR(20),
+	address TEXT,
+	role VARCHAR(20)
+);
 
 -- Doctor
 CREATE TABLE doctor();
