@@ -33,10 +33,22 @@ CREATE TABLE employee(
 );
 
 -- Doctor
-CREATE TABLE doctor();
+CREATE TABLE doctor(
+	doctor_id SERIAL PRIMARY KEY,
+	fname VARCHAR(20),
+	lname VARCHAR(20),
+	specialty VARCHAR(20),
+	phone VARCHAR(20),
+	license_num VARCHAR(20)
+);
 
 -- Medication
-CREATE TABLE medication();
+CREATE TABLE medication(
+	medication_id SERIAL PRIMARY KEY,
+	name VARCHAR(20),
+	strength VARCHAR(50),
+	dosage VARCHAR(50)
+);
 
 -- Prescription
 CREATE TABLE prescription();
