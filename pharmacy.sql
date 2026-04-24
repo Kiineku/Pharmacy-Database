@@ -57,7 +57,12 @@ CREATE TABLE prescription();
 CREATE TABLE inventory();
 
 -- Supplier
-CREATE TABLE supplier();
+CREATE TABLE supplier(
+	supplier_id SERIAL PRIMARY KEY,
+	medication_id INT REFERENCES medication(medication_id),
+	employee_id INT REFERENCES employee(employee_id),
+	
+);
 
 -- Sales Transaction
 CREATE TABLE sales_transaction();
