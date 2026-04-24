@@ -53,10 +53,10 @@ CREATE TABLE medication(
 -- Prescription
 CREATE TABLE prescription(
 	prescription_id SERIAL PRIMARY KEY,
-	doctor_id REFERENCES doctor(doctor_id),
-	ssn REFERENCES patient(ssn),
-	medication_id REFERENCES medication(medication_id),
-	employee_id REFERENCES employee(employee_id),
+	doctor_id INT REFERENCES doctor(doctor_id),
+	ssn VARCHAR(11) REFERENCES patient(ssn),
+	medication_id INT REFERENCES medication(medication_id),
+	employee_id INT REFERENCES employee(employee_id),
 	drug_name VARCHAR(50),
 	date_issued DATE,
 	expiration_date DATE,
@@ -68,10 +68,11 @@ CREATE TABLE prescription(
 -- Inventory
 CREATE TABLE inventory(
 	inventory_id SERIAL PRIMARY KEY,
-	medication_id REFERENCES medication(medication_id),
-	employee_id REFERENCES employee(employee_id),
+	medication_id INT REFERENCES medication(medication_id),
+	employee_id INT REFERENCES employee(employee_id),
 	quantity INT,
-	reorder_date DATE
+	reorder_date DATE,
+	expiration_date DATE
 );
 
 -- Supplier
