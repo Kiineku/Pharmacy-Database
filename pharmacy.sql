@@ -85,5 +85,3 @@ CREATE TABLE supplier(
 
 -- Sales Transaction
 CREATE TABLE sales_transaction();
-
---Testing
