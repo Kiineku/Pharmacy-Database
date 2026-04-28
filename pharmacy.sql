@@ -81,11 +81,26 @@ CREATE TABLE inventory(
 CREATE TABLE supplier(
 	supplier_id SERIAL PRIMARY KEY,
 	medication_id INT REFERENCES medication(medication_id),
-	employee_id INT REFERENCES employee(employee_id)
+	tote_id INT,
+	company_name VARCHAR(50),
+	employee_id INT REFERENCES employee(employee_id),
+	contact_name VARCHAR(50),
+	contact_phone VARCHAR(20),
+	status VARCHAR(50)
 );
 
 -- Sales Transaction
-CREATE TABLE sales_transaction();
+CREATE TABLE sales_transaction(
+	transaction_id SERIAL PRIMARY KEY,
+	ssn VARCHAR(11) REFERENCES patient(ssn),
+	medication_id INT REFERENCES medication(medication_id),
+	prescription_id INT REFERENCES prescription(prescription_id),
+	employee_id INT REFERENCES employee(employee_id),
+	transaction_date DATE,
+	payment_type VARCHAR(10),
+	total_amount DECIMAL(8, 2), -- 8 total digits, 2 of which will be decimals
+	receipt_number INT
+);
 
 -- SAMPLE DATA ----------------------------------------------
 
@@ -191,6 +206,27 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('691-25-7482','Sadie','Love','1992-06-30','214-555-4328','2700 Belt Line Rd, Carrollton, TX','None','Cigna'),
 	('804-37-2196','Brayden','Greer','1987-01-21','469-555-4329','4100 Main St, Garland, TX','Hypertension, High Cholesterol','UHC'),
 	('335-92-6841','Claire','Casey','1999-09-18','972-555-4330','5600 Greenville Ave, Dallas, TX','None','Ambetter');
+
+-- Employees
+INSERT INTO employee (fname, lname, dob, phone, address, role) VALUES
+	
+-- Doctors
+INSERT INTO doctor (fname, lname, specialty, phone, license_num) VALUES
+
+-- Medications
+INSERT INTO medication (name, strength, dosage) VALUES
+
+-- Prescriptions
+INSERT INTO prescription (doctor_id, ssn, medication_id, employee_id, drug_name, date_issued, expiration_date, quantity, dosage, refills) VALUES
+
+-- Inventory
+INSERT INTO inventory (medication_id, employee_id, quantity, reorder_date, expiration_date) VALUES
+
+-- Suppliers
+INSERT INTO supplier (medication_id, tote_id, company_name, employee_id, contact_name, contact_phone, status) VALUES
+
+-- Sales Transactions
+INSERT INTO sales_transaction (ssn, medication_id, prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
 
 -- QUERIES -------------------------------
 
