@@ -5,8 +5,10 @@ DROP TABLE IF EXISTS prescription;
 DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS medication;
 DROP TABLE IF EXISTS doctor;
-DROP TABLE IF EXISTS employee;
+DROP TABLE IF EXISTS employee CASCADE;
 DROP TABLE IF EXISTS patient CASCADE;
+
+-- TABLES -------------------------------
 
 -- Patient
 CREATE TABLE patient(
@@ -21,7 +23,88 @@ CREATE TABLE patient(
 	insurance VARCHAR(50)
 );
 
--- Patient Data
+-- Employee
+CREATE TABLE employee(
+	employee_id SERIAL PRIMARY KEY,
+	fname VARCHAR(20),
+	lname VARCHAR(20),
+	dob DATE,
+	phone VARCHAR(20),
+	address TEXT,
+	role VARCHAR(20)
+);
+
+-- Doctor
+CREATE TABLE doctor(
+	doctor_id SERIAL PRIMARY KEY,
+	fname VARCHAR(20),
+	lname VARCHAR(20),
+	specialty VARCHAR(20),
+	phone VARCHAR(20),
+	license_num VARCHAR(20)
+);
+
+-- Medication
+CREATE TABLE medication(
+	medication_id SERIAL PRIMARY KEY,
+	name VARCHAR(20),
+	strength VARCHAR(50),
+	dosage VARCHAR(50)
+);
+
+-- Prescription
+CREATE TABLE prescription(
+	prescription_id SERIAL PRIMARY KEY,
+	doctor_id INT REFERENCES doctor(doctor_id),
+	ssn VARCHAR(11) REFERENCES patient(ssn),
+	medication_id INT REFERENCES medication(medication_id),
+	employee_id INT REFERENCES employee(employee_id),
+	drug_name VARCHAR(50),
+	date_issued DATE,
+	expiration_date DATE,
+	quantity INT,
+	dosage VARCHAR(20),
+	refills INT
+);
+		
+-- Inventory
+CREATE TABLE inventory(
+	inventory_id SERIAL PRIMARY KEY,
+	medication_id INT REFERENCES medication(medication_id),
+	employee_id INT REFERENCES employee(employee_id),
+	quantity INT,
+	reorder_date DATE,
+	expiration_date DATE
+);
+
+-- Supplier
+CREATE TABLE supplier(
+	supplier_id SERIAL PRIMARY KEY,
+	medication_id INT REFERENCES medication(medication_id),
+	tote_id INT,
+	company_name VARCHAR(50),
+	employee_id INT REFERENCES employee(employee_id),
+	contact_name VARCHAR(50),
+	contact_phone VARCHAR(20),
+	status VARCHAR(50)
+);
+
+-- Sales Transaction
+CREATE TABLE sales_transaction(
+	transaction_id SERIAL PRIMARY KEY,
+	ssn VARCHAR(11) REFERENCES patient(ssn),
+	medication_id INT REFERENCES medication(medication_id),
+	prescription_id INT REFERENCES prescription(prescription_id),
+	employee_id INT REFERENCES employee(employee_id),
+	transaction_date DATE,
+	payment_type VARCHAR(10),
+	total_amount DECIMAL(8, 2), -- 8 total digits, 2 of which will be decimals
+	receipt_number INT
+);
+
+-- SAMPLE DATA ----------------------------------------------
+
+-- Patients
 INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, insurance) VALUES
 	('123-45-6789', 'John', 'Brown', '1993-02-23', '512-234-2344', '123 Abc Lane, Dallas, TX', 'Asthma', 'BCBS'),
  	('401-56-3099', 'Liam', 'Carter', '1988-01-15', '214-555-4101', '742 Maple St, Dallas, TX', 'Hypertension', 'Aetna'),
@@ -124,70 +207,39 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('804-37-2196','Brayden','Greer','1987-01-21','469-555-4329','4100 Main St, Garland, TX','Hypertension, High Cholesterol','UHC'),
 	('335-92-6841','Claire','Casey','1999-09-18','972-555-4330','5600 Greenville Ave, Dallas, TX','None','Ambetter');
 
-/* To test table
+-- Employees
+INSERT INTO employee (fname, lname, dob, phone, address, role) VALUES
+	('Alex', 'Ramirez', '1990-03-14', '214-555-7821', '2354 Maple St, Dallas, TX', 'Technician'),
+	('Jordan', 'Lee', '1987-11-22', '469-555-1934', '4326 Oak Ave, Plano, TX', 'Technician'),
+	('Taylor', 'Nguyen', '1995-06-08', '972-555-6672', '15 Pine Rd, Richardson, TX', 'Technician'),
+	('Morgan', 'Patel', '1992-09-30', '214-555-4459', '3218 Cedar Blvd, Garland, TX', 'Technician'),
+	('Casey', 'Johnson', '1985-01-17', '469-555-8823', '87 Birch Ln, Irving, TX', 'Pharmacist'),
+	('Riley', 'Smith', '1991-07-25', '972-555-1290', '9124 Spruce Dr, Carrollton, TX', 'Pharmacist');
+	
+-- Doctors
+INSERT INTO doctor (fname, lname, specialty, phone, license_num) VALUES
+
+-- Medications
+INSERT INTO medication (name, strength, dosage) VALUES
+
+-- Prescriptions
+INSERT INTO prescription (doctor_id, ssn, medication_id, employee_id, drug_name, date_issued, expiration_date, quantity, dosage, refills) VALUES
+
+-- Inventory
+INSERT INTO inventory (medication_id, employee_id, quantity, reorder_date, expiration_date) VALUES
+
+-- Suppliers
+INSERT INTO supplier (medication_id, tote_id, company_name, employee_id, contact_name, contact_phone, status) VALUES
+
+-- Sales Transactions
+INSERT INTO sales_transaction (ssn, medication_id, prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
+
+-- QUERIES -------------------------------
+
+/* To test tables 
 SELECT *
 FROM patient;
+
+SELECT *
+FROM employee;
 */
--- Employee
-CREATE TABLE employee(
-	employee_id SERIAL PRIMARY KEY,
-	fname VARCHAR(20),
-	lname VARCHAR(20),
-	dob DATE,
-	phone VARCHAR(20),
-	address TEXT,
-	role VARCHAR(20)
-);
-
--- Doctor
-CREATE TABLE doctor(
-	doctor_id SERIAL PRIMARY KEY,
-	fname VARCHAR(20),
-	lname VARCHAR(20),
-	specialty VARCHAR(20),
-	phone VARCHAR(20),
-	license_num VARCHAR(20)
-);
-
--- Medication
-CREATE TABLE medication(
-	medication_id SERIAL PRIMARY KEY,
-	name VARCHAR(20),
-	strength VARCHAR(50),
-	dosage VARCHAR(50)
-);
-
--- Prescription
-CREATE TABLE prescription(
-	prescription_id SERIAL PRIMARY KEY,
-	doctor_id INT REFERENCES doctor(doctor_id),
-	ssn VARCHAR(11) REFERENCES patient(ssn),
-	medication_id INT REFERENCES medication(medication_id),
-	employee_id INT REFERENCES employee(employee_id),
-	drug_name VARCHAR(50),
-	date_issued DATE,
-	expiration_date DATE,
-	quantity INT,
-	dosage VARCHAR(20),
-	refills INT
-);
-		
--- Inventory
-CREATE TABLE inventory(
-	inventory_id SERIAL PRIMARY KEY,
-	medication_id INT REFERENCES medication(medication_id),
-	employee_id INT REFERENCES employee(employee_id),
-	quantity INT,
-	reorder_date DATE,
-	expiration_date DATE
-);
-
--- Supplier
-CREATE TABLE supplier(
-	supplier_id SERIAL PRIMARY KEY,
-	medication_id INT REFERENCES medication(medication_id),
-	employee_id INT REFERENCES employee(employee_id)
-);
-
--- Sales Transaction
-CREATE TABLE sales_transaction();
