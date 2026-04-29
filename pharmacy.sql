@@ -209,6 +209,12 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 
 -- Employees
 INSERT INTO employee (fname, lname, dob, phone, address, role) VALUES
+	('Alex', 'Ramirez', '1990-03-14', '214-555-7821', '2354 Maple St, Dallas, TX', 'Technician'),
+	('Jordan', 'Lee', '1987-11-22', '469-555-1934', '4326 Oak Ave, Plano, TX', 'Technician'),
+	('Taylor', 'Nguyen', '1995-06-08', '972-555-6672', '15 Pine Rd, Richardson, TX', 'Technician'),
+	('Morgan', 'Patel', '1992-09-30', '214-555-4459', '3218 Cedar Blvd, Garland, TX', 'Technician'),
+	('Casey', 'Johnson', '1985-01-17', '469-555-8823', '87 Birch Ln, Irving, TX', 'Pharmacist'),
+	('Riley', 'Smith', '1991-07-25', '972-555-1290', '9124 Spruce Dr, Carrollton, TX', 'Pharmacist');
 	
 -- Doctors
 INSERT INTO doctor (fname, lname, specialty, phone, license_num) VALUES
@@ -230,7 +236,10 @@ INSERT INTO sales_transaction (ssn, medication_id, prescription_id, employee_id,
 
 -- QUERIES -------------------------------
 
-/* To test table
+/* To test tables 
 SELECT *
 FROM patient;
+
+SELECT *
+FROM employee;
 */
