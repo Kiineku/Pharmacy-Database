@@ -1,10 +1,10 @@
 -- Drop
-DROP TABLE IF EXISTS sales_transaction;
-DROP TABLE IF EXISTS inventory;
-DROP TABLE IF EXISTS prescription;
-DROP TABLE IF EXISTS supplier;
-DROP TABLE IF EXISTS medication;
-DROP TABLE IF EXISTS doctor;
+DROP TABLE IF EXISTS sales_transaction CASCADE;
+DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS prescription CASCADE;
+DROP TABLE IF EXISTS supplier CASCADE;
+DROP TABLE IF EXISTS medication CASCADE;
+DROP TABLE IF EXISTS doctor	CASCADE;
 DROP TABLE IF EXISTS employee CASCADE;
 DROP TABLE IF EXISTS patient CASCADE;
 
@@ -215,7 +215,7 @@ INSERT INTO employee (fname, lname, dob, phone, address, role) VALUES
 	('Morgan', 'Patel', '1992-09-30', '214-555-4459', '3218 Cedar Blvd, Garland, TX', 'Technician'),
 	('Casey', 'Johnson', '1985-01-17', '469-555-8823', '87 Birch Ln, Irving, TX', 'Pharmacist'),
 	('Riley', 'Smith', '1991-07-25', '972-555-1290', '9124 Spruce Dr, Carrollton, TX', 'Pharmacist');
-	
+
 -- Doctors
 INSERT INTO doctor (fname, lname, specialty, phone, license_num) VALUES
 
