@@ -46,10 +46,10 @@ CREATE TABLE doctor(
 
 -- Medication
 CREATE TABLE medication(
-	medication_id SERIAL PRIMARY KEY,
-	name VARCHAR(20),
+	medication_id VARCHAR(13) PRIMARY KEY,
+	name VARCHAR(50),
 	strength VARCHAR(50),
-	dosage VARCHAR(50)
+	dosage_form VARCHAR(50)
 );
 
 -- Prescription
@@ -57,7 +57,7 @@ CREATE TABLE prescription(
 	prescription_id SERIAL PRIMARY KEY,
 	doctor_id INT REFERENCES doctor(doctor_id),
 	ssn VARCHAR(11) REFERENCES patient(ssn),
-	medication_id INT REFERENCES medication(medication_id),
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	employee_id INT REFERENCES employee(employee_id),
 	drug_name VARCHAR(50),
 	date_issued DATE,
@@ -70,7 +70,7 @@ CREATE TABLE prescription(
 -- Inventory
 CREATE TABLE inventory(
 	inventory_id SERIAL PRIMARY KEY,
-	medication_id INT REFERENCES medication(medication_id),
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	employee_id INT REFERENCES employee(employee_id),
 	quantity INT,
 	reorder_date DATE,
@@ -80,7 +80,7 @@ CREATE TABLE inventory(
 -- Supplier
 CREATE TABLE supplier(
 	supplier_id SERIAL PRIMARY KEY,
-	medication_id INT REFERENCES medication(medication_id),
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	tote_id INT,
 	company_name VARCHAR(50),
 	employee_id INT REFERENCES employee(employee_id),
@@ -93,7 +93,7 @@ CREATE TABLE supplier(
 CREATE TABLE sales_transaction(
 	transaction_id SERIAL PRIMARY KEY,
 	ssn VARCHAR(11) REFERENCES patient(ssn),
-	medication_id INT REFERENCES medication(medication_id),
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	prescription_id INT REFERENCES prescription(prescription_id),
 	employee_id INT REFERENCES employee(employee_id),
 	transaction_date DATE,
@@ -218,9 +218,87 @@ INSERT INTO employee (fname, lname, dob, phone, address, role) VALUES
 
 -- Doctors
 INSERT INTO doctor (fname, lname, specialty, phone, license_num) VALUES
+	('John', 'Smith', 'Cardiology', '972-948-0198', '1029303942'),
+	('Mark', 'Andrews', 'Neurology', '214-028-8394', '0192839451'),
+	('Allison', 'Martinez', 'Pediatrics', '469-583-9945', '9384938492'),
+	('Lucas', 'Long', 'Gastroenterology', '293-398-1923', '4873917384'),
+	('Wendy', 'Pearl', 'General Practioner', '918-456-1928', '7483291832'),
+	('Robin', 'Nico', 'Psychiatry', '303-294-9019', '0382933921');
 
 -- Medications
-INSERT INTO medication (name, strength, dosage) VALUES
+INSERT INTO medication (medication_id, name, strength, dosage_form) VALUES
+	('40134-5029-01','alprazolam', '0.25mg', 'tablet'),
+	('40134-5029-02','alprazolam', '0.5mg', 'tablet'),
+	('40134-5029-03','alprazolam', '1.0mg', 'tablet'),
+	('15245-9586-01','clonazepam', '0.5mg', 'tablet'),
+	('15245-9586-02','clonazepam', '1mg', 'tablet'),
+	('15245-9586-03','clonazepam', '2mg', 'tablet'),
+	('83457-1029-01','fluoxetine', '10mg', 'tablet'),
+	('83457-1029-02','fluoxetine', '20mg', 'tablet'),
+	('83457-1029-03','fluoxetine', '10mg', 'capsule'),
+	('83457-1029-04','fluoxetine', '20mg', 'capsule'),
+	('83457-1029-05','fluoxetine', '40mg', 'capsule'),
+	('03925-3859-01','escitalopram', '5mg', 'tablet'),
+	('03925-3859-02','escitalopram', '10mg', 'tablet'),
+	('03925-3859-03','escitalopram', '20mg', 'tablet'),
+	('95738-1456-01','acetaminophen with codeine #2', '300mg-15mg', 'tablet'),
+	('95738-1456-02','acetaminophen with codeine #3', '300mg-30mg', 'tablet'),
+	('95738-1456-03','acetaminophen with codeine #4', '300mg-60mg', 'tablet'),
+	('76319-2947-01','buprenorphine and nalaxone', '8mg-2mg', 'tablet'),
+	('76319-2947-02','buprenorphine and nalaxone', '4mg-1mg', 'tablet'),
+	('28573-1947-01','sertraline', '25mg', 'tablet'),
+	('28573-1947-02','sertraline', '50mg', 'tablet'),
+	('28573-1947-03','sertraline', '100mg', 'tablet'),
+	('10459-1983-01','amoxicillin', '250mg', 'tablet'),
+	('10459-1983-02','amoxicillin', '500mg', 'tablet'),
+	('10459-1983-03','amoxicillin', '250mg', 'capsule'),
+	('10459-1983-04','amoxicillin', '500mg', 'capsule'),
+	('28395-0395-01','ondansetron', '4mg', 'tablet'),
+	('28395-0395-02','ondansetron', '8mg', 'tablet'),
+	('57294-3948-01','warfarin sodium', '1mg', 'tablet'),
+	('57294-3948-02','warfarin sodium', '2mg', 'tablet'),
+	('57294-3948-03','warfarin sodium', '3mg', 'tablet'),
+	('01924-3958-01','tadalafil', '5mg', 'tablet'),
+	('01924-3958-02','tadalafil', '10mg', 'tablet'),
+	('01924-3958-03','tadalafil', '20mg', 'tablet'),
+	('65839-3849-01','telmisartan', '20mg', 'tablet'),
+	('65839-3849-02','telmisartan', '40mg', 'tablet'),
+	('65839-3849-03','telmisartan', '80mg', 'tablet'),
+	('11957-9284-01','levothyroxine', '25mcg', 'tablet'),
+	('11957-9284-02','levothyroxine', '50mcg', 'tablet'),
+	('11957-9284-03','levothyroxine', '75mcg', 'tablet'),
+	('11957-9284-04','levothyroxine', '88mcg', 'tablet'),
+	('11957-9284-05','levothyroxine', '100mcg', 'tablet'),
+	('09483-8473-01','lamotrigine', '25mg', 'tablet'),
+	('09483-8473-02','lamotrigine', '50mg', 'tablet'),
+	('09483-8473-03','lamotrigine', '75mg', 'tablet'),
+	('09483-8473-04','lamotrigine', '100mg', 'tablet'),
+	('83792-0193-01','mirtazapine', '15mg', 'tablet'),
+	('83792-0193-02','mirtazapine', '30mg', 'tablet'),
+	('83792-0193-03','mirtazapine', '45mg', 'tablet'),
+	('93847-9473-01','levofloxacin', '250mg', 'tablet'),
+	('93847-9473-02','levofloxacin', '500mg', 'tablet'),
+	('93847-9473-03','levofloxacin', '750mg', 'tablet'),
+	('84792-1945-01','furosemide', '20mg', 'tablet'),
+	('84792-1945-02','furosemide', '40mg', 'tablet'),
+	('84792-1945-03','furosemide', '80mg', 'tablet'),
+	('42812-0839-01','lisinopril', '10mg', 'tablet'),
+	('42812-0839-02','lisinopril', '20mg', 'tablet'),
+	('88732-0189-01','losartan', '25mg', 'tablet'),
+	('88732-0189-02','losartan', '50mg', 'tablet'),
+	('88732-0189-03','losartan', '100mg', 'tablet'),
+	('75493-9378-01','atorvastatin', '10mg', 'tablet'),
+	('75493-9378-02','atorvastatin', '20mg', 'tablet'),
+	('75493-9378-03','atorvastatin', '40mg', 'tablet'),
+	('89102-0389-01','cefdinir', '300mg', 'capsule'),
+	('89102-0389-02','cephalexin', '250mg', 'tablet'),
+	('89102-0389-03','cephalexin', '500mg', 'tablet'),
+	('89102-0389-04','cephalexin', '250mg', 'capsule'),
+	('89102-0389-05','cephalexin', '500mg', 'capsule'),
+	('27362-0830-01','pantoprazole', '20mg', 'tablet'),
+	('27362-0830-02','pantoprazole', '40mg', 'tablet'),
+	('00198-4739-01','omeprazole', '20mg', 'capsule'),
+	('00198-4739-02','omeprazole', '40mg', 'capsule');
 
 -- Prescriptions
 INSERT INTO prescription (doctor_id, ssn, medication_id, employee_id, drug_name, date_issued, expiration_date, quantity, dosage, refills) VALUES
@@ -236,10 +314,22 @@ INSERT INTO sales_transaction (ssn, medication_id, prescription_id, employee_id,
 
 -- QUERIES -------------------------------
 
-/* To test tables 
+/*
 SELECT *
 FROM patient;
+*/
 
+/*
 SELECT *
 FROM employee;
+*/
+
+/*
+SELECT *
+FROM doctor;
+*/
+
+/*
+SELECT *
+FROM medication;
 */
