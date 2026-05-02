@@ -12,8 +12,8 @@ DROP TABLE IF EXISTS patient CASCADE;
 
 -- Patient
 CREATE TABLE patient(
-	ssn VARCHAR(11) PRIMARY KEY,
-	patient_id SERIAL,
+	patient_id SERIAL PRIMARY KEY,
+	ssn VARCHAR(11),
 	fname VARCHAR(20),
 	lname VARCHAR(20),
 	dob DATE,
@@ -56,15 +56,14 @@ CREATE TABLE medication(
 CREATE TABLE prescription(
 	prescription_id SERIAL PRIMARY KEY,
 	doctor_id INT REFERENCES doctor(doctor_id),
-	ssn VARCHAR(11) REFERENCES patient(ssn),
+	patient_id INT REFERENCES patient(patient_id),
 	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	employee_id INT REFERENCES employee(employee_id),
-	drug_name VARCHAR(50),
 	date_issued DATE,
-	expiration_date DATE,
 	quantity INT,
-	dosage VARCHAR(20),
-	refills INT
+	refills INT,
+	directions VARCHAR(100),
+	days_supply INT
 );
 		
 -- Inventory
@@ -92,7 +91,7 @@ CREATE TABLE supplier(
 -- Sales Transaction
 CREATE TABLE sales_transaction(
 	transaction_id SERIAL PRIMARY KEY,
-	ssn VARCHAR(11) REFERENCES patient(ssn),
+	patient_id INT REFERENCES patient(patient_id),
 	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	prescription_id INT REFERENCES prescription(prescription_id),
 	employee_id INT REFERENCES employee(employee_id),
@@ -300,17 +299,66 @@ INSERT INTO medication (medication_id, name, strength, dosage_form) VALUES
 	('00198-4739-01','omeprazole', '20mg', 'capsule'),
 	('00198-4739-02','omeprazole', '40mg', 'capsule');
 
--- Prescriptions
-INSERT INTO prescription (doctor_id, ssn, medication_id, employee_id, drug_name, date_issued, expiration_date, quantity, dosage, refills) VALUES
+
+-- Prescriptions 20
+INSERT INTO prescription (doctor_id, patient_id, medication_id, employee_id, date_issued, quantity, refills, directions, days_supply) VALUES
+	(3, 4, '83457-1029-05', 5, '2026-05-18', 30, 2, 'Take 1 capsule daily', 30),
+	(1, 9, '40134-5029-03', 6, '2026-06-27', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(5, 2, '10459-1983-02', 5, '2026-07-11', 21, 0, 'Take 1 tablet three times daily', 7),
+	(2, 15, '03925-3859-03', 6, '2026-05-29', 30, 1, 'Take 1 tablet daily', 30),
+	(6, 7, '28573-1947-03', 5, '2026-06-14', 60, 2, 'Take 1 tablet daily', 60),
+	(4, 12, '57294-3948-01', 6, '2026-07-02', 30, 1, 'Take 1 tablet daily', 30),
+	(1, 18, '42812-0839-02', 5, '2026-05-21', 90, 2, 'Take 1 tablet daily', 90),
+	(3, 5, '95738-1456-02', 6, '2026-06-09', 15, 0, 'Take 1 tablet every 6 hours as needed', 5),
+	(2, 11, '01924-3958-02', 5, '2026-07-15', 10, 0, 'Take 1 tablet as needed', 10),
+	(5, 6, '76319-2947-01', 6, '2026-05-26', 30, 2, 'Take 1 tablet daily', 30),
+	(4, 13, '11957-9284-03', 5, '2026-06-30', 90, 3, 'Take 1 tablet daily before breakfast', 90),
+	(6, 10, '84792-1945-03', 6, '2026-07-08', 30, 1, 'Take 1 tablet daily', 30),
+	(1, 3, '15245-9586-01', 5, '2026-05-24', 60, 1, 'Take 1 tablet twice daily', 30),
+	(3, 8, '28395-0395-02', 6, '2026-06-19', 20, 1, 'Take 1 tablet as needed for nausea', 5),
+	(2, 16, '93847-9473-02', 5, '2026-07-01', 10, 0, 'Take 1 tablet daily', 10),
+	(5, 1, '65839-3849-03', 6, '2026-05-30', 30, 2, 'Take 1 tablet daily', 30),
+	(4, 14, '09483-8473-02', 5, '2026-06-12', 60, 1, 'Take 1 tablet twice daily', 30),
+	(6, 17, '83792-0193-01', 6, '2026-07-20', 30, 2, 'Take 1 tablet at bedtime', 30),
+	(1, 19, '88732-0189-03', 5, '2026-06-03', 30, 2, 'Take 1 tablet daily', 30),
+	(2, 20, '75493-9378-02', 6, '2026-07-17', 30, 1, 'Take 1 tablet at bedtime', 30);
 
 -- Inventory
 INSERT INTO inventory (medication_id, employee_id, quantity, reorder_date, expiration_date) VALUES
+	('40134-5029-03', 2, 145, '2026-06-02', '2028-03-11'),
+	('15245-9586-01', 3, 182, '2026-07-06', '2027-11-25'),
+	('83457-1029-03', 1, 210, '2026-07-09', '2029-01-14'),
+	('83457-1029-05', 4, 167, '2026-06-11', '2028-07-03'),
+	('03925-3859-03', 5, 198, '2026-05-13', '2027-12-09'),
+	('95738-1456-02', 6, 123, '2026-06-16', '2028-02-17'),
+	('76319-2947-01', 1, 205, '2026-06-18', '2029-05-22'),
+	('28573-1947-03', 2, 234, '2026-05-21', '2027-10-30'),
+	('10459-1983-02', 3, 190, '2026-06-23', '2028-06-19'),
+	('10459-1983-03', 4, 222, '2026-06-24', '2029-03-07'),
+	('28395-0395-02', 5, 140, '2026-05-26', '2027-08-15'),
+	('57294-3948-01', 6, 176, '2026-05-29', '2028-09-28'),
+	('01924-3958-02', 1, 214, '2026-06-02', '2029-02-12'),
+	('65839-3849-03', 2, 168, '2026-07-05', '2027-11-03'),
+	('11957-9284-03', 3, 245, '2026-06-08', '2028-12-21'),
+	('11957-9284-04', 4, 201, '2026-07-09', '2029-04-18'),
+	('09483-8473-01', 5, 183, '2026-06-11', '2027-07-27'),
+	('09483-8473-02', 6, 229, '2026-05-12', '2028-10-05'),
+	('83792-0193-01', 1, 157, '2026-07-14', '2029-06-11'),
+	('93847-9473-02', 2, 219, '2026-05-16', '2028-01-30'),
+	('84792-1945-03', 3, 132, '2026-05-18', '2027-09-09'),
+	('42812-0839-02', 4, 248, '2026-07-21', '2029-03-25'),
+	('88732-0189-03', 5, 171, '2026-06-23', '2028-05-14'),
+	('75493-9378-02', 6, 206, '2026-05-25', '2027-12-31'),
+	('89102-0389-01', 2, 128, '2026-06-17', '2028-02-11'),
+	('89102-0389-03', 3, 241, '2026-06-11', '2028-01-12'),
+	('27362-0830-02', 1, 163, '2026-05-17', '2027-07-02'),
+	('00198-4739-01', 1, 195, '2026-05-28', '2027-03-21');
 
 -- Suppliers
 INSERT INTO supplier (medication_id, tote_id, company_name, employee_id, contact_name, contact_phone, status) VALUES
 
 -- Sales Transactions
-INSERT INTO sales_transaction (ssn, medication_id, prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
+INSERT INTO sales_transaction (patient_id, medication_id, prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
 
 -- QUERIES -------------------------------
 
@@ -332,4 +380,14 @@ FROM doctor;
 /*
 SELECT *
 FROM medication;
+*/
+
+/*
+SELECT *
+FROM prescription;
+*/
+
+/*
+SELECT *
+FROM inventory;
 */
