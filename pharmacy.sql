@@ -400,6 +400,7 @@ SELECT *
 FROM doctor
 WHERE specialty = 'Neurology';
 
+/*
 SELECT *
 FROM inventory
 WHERE quantity < '150';
@@ -420,3 +421,4 @@ JOIN medication m ON p.medication_id = m.medication_id
 GROUP BY m.name
 ORDER BY times_prescribed DESC
 LIMIT 1;
+*/
