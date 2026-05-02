@@ -107,7 +107,7 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
  	('401-56-3099', 'Liam', 'Carter', '1988-01-15', '214-555-4101', '742 Maple St, Dallas, TX', 'Hypertension', 'Aetna'),
     ('523-62-9443', 'Emma', 'Nguyen', '1995-06-22', '469-555-4102', '88 Oak Ave, Plano, TX', 'None', 'Cigna'),
     ('633-75-4196', 'Noah', 'Patel', '1979-03-11', '972-555-4103', '15 Cedar Dr, Irving, TX', 'Asthma', 'BCBS'),
-    ('748-89-3063', 'Olivia', 'Garcia', '2001-09-09', '214-555-4104', '203 Pine St, Richardson, TX', 'None', 'UHC'),
+    ('748-89-3063', 'Olivia', 'Garcia', '2001-09-09', '214-555-4104', '203 Pine St, Richardson, TX', 'Depression', 'UHC'),
     ('854-90-3354', 'Elijah', 'Kim', '1965-12-30', '469-555-4105', '55 Lake Blvd, Garland, TX', 'Diabetes', 'Medicare'),
 	('961-01-4106', 'Ava', 'Lopez', '1992-07-18', '972-555-4106', '77 Ridge Rd, Frisco, TX', 'None', 'CHRISTUS'),
 	('177-12-7708', 'William', 'Singh', '1980-02-02', '214-555-4107', '102 Elm St, Addison, TX', 'Arthritis', 'Cigna'),
@@ -153,7 +153,7 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('538-58-6260', 'Lily', 'Bailey', '1997-09-29', '972-555-4145', '7000 Greenville Ave, Dallas, TX', 'None', 'Cigna'),
 	('645-24-4146', 'James', 'Hughes', '1983-11-11', '214-555-4146', '3300 Mockingbird Ln, Dallas, TX', 'Diabetes', 'BCBS'),
 	('752-06-1950', 'Amelia', 'Ward', '1994-02-06', '469-555-4147', '4100 Main St, Richardson, TX', 'None', 'UHC'),
-	('867-90-2801', 'Benjamin', 'Brooks', '1979-07-18', '972-555-4148', '1500 Legacy Dr, Plano, TX', 'Arthritis', 'Medicare'),
+	('867-90-2801', 'Benjamin', 'Brooks', '1979-07-18', '972-555-4148', '1500 Legacy Dr, Plano, TX', 'Arthritis, Depression', 'Medicare'),
 	('971-66-0877', 'Harper', 'Sanders', '1996-04-25', '214-555-4149', '900 Main St, Dallas, TX', 'None', 'Ambetter'),
 	('182-38-1793', 'Lucas', 'Price', '1988-08-08', '469-555-4150', '2300 Preston Rd, Frisco, TX', 'Asthma', 'Cigna'),
 	('295-19-5184', 'Evelyn', 'Long', '1969-01-17', '972-555-4151', '7800 Coit Rd, Plano, TX', 'COPD', 'Medicare'),
@@ -297,11 +297,12 @@ INSERT INTO medication (medication_id, name, strength, dosage_form) VALUES
 	('00198-4739-01','omeprazole', '20mg', 'capsule'),
 	('00198-4739-02','omeprazole', '40mg', 'capsule');
 
-
 -- Prescriptions 20
 INSERT INTO prescription (doctor_id, patient_id, medication_id, employee_id, date_issued, quantity, refills, directions, days_supply) VALUES
 	(3, 4, '83457-1029-05', 5, '2026-05-18', 30, 2, 'Take 1 capsule daily', 30),
-	(1, 9, '40134-5029-03', 6, '2026-06-27', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 5, '40134-5029-03', 6, '2026-06-27', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 51, '40134-5029-02', 6, '2025-11-21', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 86, '40134-5029-01', 6, '2026-02-13', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
 	(5, 2, '10459-1983-02', 5, '2026-07-11', 21, 0, 'Take 1 tablet three times daily', 7),
 	(2, 15, '03925-3859-03', 6, '2026-05-29', 30, 1, 'Take 1 tablet daily', 30),
 	(6, 7, '28573-1947-03', 5, '2026-06-14', 60, 2, 'Take 1 tablet daily', 60),
@@ -379,43 +380,45 @@ INSERT INTO sales_transaction (prescription_id, employee_id, transaction_date, p
 	(2, 5, '2026-06-30', 'Card', 18.75, 110);
 
 -- QUERIES -------------------------------
+SELECT patient_id, fname, lname, medical_history
+FROM patient
+WHERE medical_history ILIKE '%diabetes%';
+
+SELECT fname, lname, medical_history
+FROM patient
+WHERE medical_history = 'Diabetes';
+
+SELECT *
+FROM prescription
+WHERE date_issued < '2026-06-01';
+
+SELECT * 
+FROM employee
+WHERE role = 'Technician';
+
+SELECT * 
+FROM doctor
+WHERE specialty = 'Neurology';
 
 /*
 SELECT *
-FROM patient;
-*/
+FROM inventory
+WHERE quantity < '150';
 
-/*
-SELECT *
-FROM employee;
-*/
+SELECT 'Dr. ' || d.lname AS doctor, p.patient_id, m.name AS medication
+FROM doctor d
+JOIN prescription p ON d.doctor_id = p.patient_id
+JOIN medication m ON p.medication_id = m.medication_id
 
-/*
-SELECT *
-FROM doctor;
-*/
+SELECT d.fname, d.lname, COUNT(p.prescription_id) AS total_prescriptions
+FROM doctor d
+JOIN prescription p ON d.doctor_id = p.doctor_id
+GROUP BY d.doctor_id;
 
-/*
-SELECT *
-FROM medication;
-*/
-
-/*
-SELECT *
-FROM prescription;
-*/
-
-/*
-SELECT *
-FROM inventory;
-*/
-
-/*
-SELECT *
-FROM supplier;
-*/
-
-/*
-SELECT *
-FROM sales_transaction;
+SELECT m.name, COUNT(*) AS times_prescribed
+FROM prescription p
+JOIN medication m ON p.medication_id = m.medication_id
+GROUP BY m.name
+ORDER BY times_prescribed DESC
+LIMIT 1;
 */
