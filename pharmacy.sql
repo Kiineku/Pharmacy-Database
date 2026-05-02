@@ -113,7 +113,7 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('177-12-7708', 'William', 'Singh', '1980-02-02', '214-555-4107', '102 Elm St, Addison, TX', 'Arthritis', 'Cigna'),
 	('289-28-0978', 'Sophia', 'Adams', '1975-11-25', '469-555-4108', '900 Cedar Ln, Dallas, TX', 'Hypertension', 'BCBS'),
 	('395-35-7882', 'James', 'Baker', '1998-04-05', '972-555-4109', '33 Birch Rd, Plano, TX', 'None', 'Ambetter'),
-	('406-41-1861', 'Isabella', 'Hill', '1983-08-13', '214-555-4110', '12 Spring Valley Rd, Richardson, TX', 'Migraine', 'Aetna'),
+	('406-41-1861', 'Isabella', 'Hill', '1983-08-13', '214-555-4110', '12 Spring Valley Rd, Richardson, TX', 'Migraine, Lung Cancer', 'Aetna'),
 	('512-56-6246', 'Benjamin', 'Ward', '1969-05-17', '469-555-4111', '500 Mockingbird Ln, Dallas, TX', 'Heart Disease, Penicillin Allergy, ', 'Medicare'),
 	('624-68-4979', 'Mia', 'Torres', '2003-10-21', '972-555-4112', '18 Meadow Rd, Frisco, TX', 'None', 'UHC'),
 	('738-71-1550', 'Lucas', 'Reed', '1991-01-08', '214-555-4113', '44 Lakeview Dr, Irving, TX', 'Asthma, Amnesia, Chlamydia', 'Cigna'),
@@ -135,14 +135,14 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('599-34-6927','David','Price','1996-12-12','469-555-4129','9090 Abram St, Carrollton, TX','None','UHC'),
 	('608-41-5214','Lily','Ross','2000-01-20','972-555-4130','1111 Greenville Ave, Dallas, TX','Varicella','Aetna'),
 	('711-56-4180','Mason','Butler','1992-02-14','214-555-4180','8000 Coit Rd, Plano, TX','None','Cigna'),
-	('824-63-9399','Noah','Carter','1988-06-18','469-555-4190','9999 Preston Rd, Dallas, TX','Meningococcal disease','BCBS'),
+	('824-63-9399','Noah','Carter','1988-06-18','469-555-4190','9999 Preston Rd, Dallas, TX','Meningococcal Disease','BCBS'),
 	('935-78-3280', 'Grace', 'Evans', '1993-05-14', '214-555-4131', '2200 Mockingbird Ln, Dallas, TX', 'None', 'Aetna'),
 	('104-82-7217', 'Ethan', 'Collins', '1987-09-02', '469-555-4132', '1450 Legacy Dr, Plano, TX', 'Asthma', 'Cigna'),
 	('213-93-2356', 'Hannah', 'Ward', '1999-11-23', '972-555-4133', '8800 Preston Rd, Dallas, TX', 'None', 'BCBS'),
 	('328-08-1152', 'Logan', 'Mitchell', '1978-03-19', '214-555-4134', '3020 Greenville Ave, Dallas, TX', 'Atherosclerosis', 'Medicare'),
 	('434-11-2532', 'Chloe', 'Scott', '1995-07-08', '469-555-4135', '101 Main St, Richardson, TX', 'None', 'UHC'),
 	('546-87-4136', 'Daniel', 'Turner', '1984-12-11', '972-555-4136', '4500 Belt Line Rd, Addison, TX', 'Epilepsy', 'Cigna'),
-	('657-77-5859', 'Ava', 'Phillips', '2001-02-14', '214-555-4137', '77 Main St, Garland, TX', 'None', 'Aetna'),
+	('657-77-5859', 'Ava', 'Phillips', '2001-02-14', '214-555-4137', '77 Main St, Garland, TX', 'Stomach Cancer', 'Aetna'),
 	('762-80-7996', 'Matthew', 'Campbell', '1990-06-30', '469-555-4138', '6000 Coit Rd, Plano, TX', 'Asthma', 'BCBS'),
 	('871-26-4789', 'Zoe', 'Parker', '1982-10-05', '972-555-4139', '3000 Main St, Dallas, TX', 'Anxiety', 'Ambetter'),
 	('980-24-6274', 'Jacob', 'Edwards', '1976-01-27', '214-555-4140', '1200 Spring Valley Rd, Richardson, TX', 'Heart Disease', 'Medicare'),
@@ -157,7 +157,7 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('971-66-0877', 'Harper', 'Sanders', '1996-04-25', '214-555-4149', '900 Main St, Dallas, TX', 'None', 'Ambetter'),
 	('182-38-1793', 'Lucas', 'Price', '1988-08-08', '469-555-4150', '2300 Preston Rd, Frisco, TX', 'Asthma', 'Cigna'),
 	('295-19-5184', 'Evelyn', 'Long', '1969-01-17', '972-555-4151', '7800 Coit Rd, Plano, TX', 'COPD', 'Medicare'),
-	('300-10-9643', 'Daniel', 'Ross', '1992-06-12', '214-555-4152', '600 Greenville Ave, Dallas, TX', 'None', 'Aetna'),
+	('300-10-9643', 'Daniel', 'Ross', '1992-06-12', '214-555-4152', '600 Greenville Ave, Dallas, TX', 'Prostate Cancer', 'Aetna'),
 	('411-62-8941', 'Chloe', 'Powell', '1995-10-10', '469-555-4153', '4400 Belt Line Rd, Addison, TX', 'Anxiety', 'BCBS'),
 	('523-55-2502', 'Logan', 'Butler', '1981-03-03', '972-555-4154', '1100 Main St, Dallas, TX', 'Pneumonia', 'Cigna'),
 	('637-35-4430', 'Ella', 'Barnes', '2002-07-07', '214-555-4155', '9200 Preston Rd, Plano, TX', 'None', 'UHC'),
@@ -301,9 +301,12 @@ INSERT INTO medication (medication_id, name, strength, dosage_form) VALUES
 INSERT INTO prescription (doctor_id, patient_id, medication_id, employee_id, date_issued, quantity, refills, directions, days_supply) VALUES
 	(3, 4, '83457-1029-05', 5, '2026-05-18', 30, 2, 'Take 1 capsule daily', 30),
 	(6, 5, '40134-5029-03', 6, '2026-06-27', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
-	(6, 51, '40134-5029-02', 6, '2025-11-21', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 51, '40134-5029-02', 6, '2026-03-21', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
 	(6, 86, '40134-5029-01', 6, '2026-02-13', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 28, '40134-5029-02', 6, '2026-04-13', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
 	(5, 2, '10459-1983-02', 5, '2026-07-11', 21, 0, 'Take 1 tablet three times daily', 7),
+	(1, 11, '28395-0395-02', 5, '2026-05-20', 10, 2, 'Take 1 tablet every 8 hours for nausea', 10),
+	(4, 40, '28395-0395-01', 5, '2026-03-16', 10, 2, 'Take 1 tablet every 8 hours for nausea', 10),
 	(2, 15, '03925-3859-03', 6, '2026-05-29', 30, 1, 'Take 1 tablet daily', 30),
 	(6, 7, '28573-1947-03', 5, '2026-06-14', 60, 2, 'Take 1 tablet daily', 60),
 	(4, 12, '57294-3948-01', 6, '2026-07-02', 30, 1, 'Take 1 tablet daily', 30),
@@ -380,10 +383,6 @@ INSERT INTO sales_transaction (prescription_id, employee_id, transaction_date, p
 	(2, 5, '2026-06-30', 'Card', 18.75, 110);
 
 -- QUERIES -------------------------------
-SELECT patient_id, fname, lname, medical_history
-FROM patient
-WHERE medical_history ILIKE '%diabetes%';
-
 SELECT fname, lname, medical_history
 FROM patient
 WHERE medical_history = 'Diabetes';
@@ -407,7 +406,7 @@ WHERE quantity < '150';
 SELECT 'Dr. ' || d.lname AS doctor, p.patient_id, m.name AS medication
 FROM doctor d
 JOIN prescription p ON d.doctor_id = p.patient_id
-JOIN medication m ON p.medication_id = m.medication_id
+JOIN medication m ON p.medication_id = m.medication_id;
 
 SELECT d.fname, d.lname, COUNT(p.prescription_id) AS total_prescriptions
 FROM doctor d
