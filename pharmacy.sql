@@ -80,7 +80,7 @@ CREATE TABLE inventory(
 CREATE TABLE supplier(
 	supplier_id SERIAL PRIMARY KEY,
 	medication_id VARCHAR(13) REFERENCES medication(medication_id),
-	tote_id INT,
+	tote_id VARCHAR(8),
 	company_name VARCHAR(50),
 	employee_id INT REFERENCES employee(employee_id),
 	contact_name VARCHAR(50),
@@ -91,8 +91,6 @@ CREATE TABLE supplier(
 -- Sales Transaction
 CREATE TABLE sales_transaction(
 	transaction_id SERIAL PRIMARY KEY,
-	patient_id INT REFERENCES patient(patient_id),
-	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	prescription_id INT REFERENCES prescription(prescription_id),
 	employee_id INT REFERENCES employee(employee_id),
 	transaction_date DATE,
@@ -356,9 +354,29 @@ INSERT INTO inventory (medication_id, employee_id, quantity, reorder_date, expir
 
 -- Suppliers
 INSERT INTO supplier (medication_id, tote_id, company_name, employee_id, contact_name, contact_phone, status) VALUES
+	('40134-5029-03', '482-1937', 'McKesson', 1, 'David Turner', '214-683-6001', 'Active'),
+	('83457-1029-05', '739-2846', 'Cardinal Health', 2, 'Samantha Lee', '469-742-6002', 'Active'),
+	('10459-1983-02', '156-9921', 'AmerisourceBergen', 3, 'Brian Scott', '972-318-6003', 'Active'),
+	('03925-3859-03', '883-4407', 'Henry Schein', 4, 'Laura Adams', '214-529-6004', 'Inactive'),
+	('28573-1947-03', '295-7710', 'McKesson', 5, 'Kevin Brooks', '469-861-6005', 'Active'),
+	('57294-3948-01', '641-5523', 'Cardinal Health', 6, 'Rachel Green', '972-447-6006', 'Active'),
+	('42812-0839-02', '907-3186', 'AmerisourceBergen', 1, 'Jason Miller', '214-395-6007', 'Active'),
+	('76319-2947-01', '214-8805', 'Henry Schein', 2, 'Emily Clark', '469-726-6008', 'Inactive'),
+	('11957-9284-03', '568-1294', 'McKesson', 3, 'Andrew White', '972-583-6009', 'Active'),
+	('09483-8473-02', '732-6651', 'Cardinal Health', 4, 'Olivia Harris', '214-914-6010', 'Active');
 
 -- Sales Transactions
-INSERT INTO sales_transaction (patient_id, medication_id, prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
+INSERT INTO sales_transaction (prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
+	(3, 2, '2026-07-13', 'Insurance', 13.25, 101),
+	(14, 3, '2026-06-18', 'Card', 26.40, 102),
+	(1, 1, '2026-05-21', 'Cash', 24.99, 103),
+	(9, 6, '2026-07-19', 'Card', 21.75, 104),
+	(7, 5, '2026-05-25', 'Insurance', 19.80, 105),
+	(12, 6, '2026-07-10', 'Cash', 17.60, 106),
+	(5, 4, '2026-06-17', 'Card', 28.50, 107),
+	(18, 4, '2026-07-22', 'Insurance', 22.90, 108),
+	(10, 2, '2026-05-29', 'Cash', 30.00, 109),
+	(2, 5, '2026-06-30', 'Card', 18.75, 110);
 
 -- QUERIES -------------------------------
 
@@ -390,4 +408,14 @@ FROM prescription;
 /*
 SELECT *
 FROM inventory;
+*/
+
+/*
+SELECT *
+FROM supplier;
+*/
+
+/*
+SELECT *
+FROM sales_transaction;
 */
