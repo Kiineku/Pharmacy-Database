@@ -421,3 +421,8 @@ GROUP BY m.name
 ORDER BY times_prescribed DESC
 LIMIT 1;
 */
+
+SELECT medication_id, reorder_date
+FROM inventory
+WHERE reorder_date BETWEEN '2026-05-06' AND '2026-05-13'
+ORDER BY reorder_date ASC;
