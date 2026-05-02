@@ -1,10 +1,10 @@
 -- Drop
-DROP TABLE IF EXISTS sales_transaction;
-DROP TABLE IF EXISTS inventory;
-DROP TABLE IF EXISTS prescription;
-DROP TABLE IF EXISTS supplier;
-DROP TABLE IF EXISTS medication;
-DROP TABLE IF EXISTS doctor;
+DROP TABLE IF EXISTS sales_transaction CASCADE;
+DROP TABLE IF EXISTS inventory CASCADE;
+DROP TABLE IF EXISTS prescription CASCADE;
+DROP TABLE IF EXISTS supplier CASCADE;
+DROP TABLE IF EXISTS medication CASCADE;
+DROP TABLE IF EXISTS doctor	CASCADE;
 DROP TABLE IF EXISTS employee CASCADE;
 DROP TABLE IF EXISTS patient CASCADE;
 
@@ -12,8 +12,8 @@ DROP TABLE IF EXISTS patient CASCADE;
 
 -- Patient
 CREATE TABLE patient(
-	ssn VARCHAR(11) PRIMARY KEY,
-	patient_id SERIAL,
+	patient_id SERIAL PRIMARY KEY,
+	ssn VARCHAR(11),
 	fname VARCHAR(20),
 	lname VARCHAR(20),
 	dob DATE,
@@ -46,31 +46,30 @@ CREATE TABLE doctor(
 
 -- Medication
 CREATE TABLE medication(
-	medication_id SERIAL PRIMARY KEY,
-	name VARCHAR(20),
+	medication_id VARCHAR(13) PRIMARY KEY,
+	name VARCHAR(50),
 	strength VARCHAR(50),
-	dosage VARCHAR(50)
+	dosage_form VARCHAR(50)
 );
 
 -- Prescription
 CREATE TABLE prescription(
 	prescription_id SERIAL PRIMARY KEY,
 	doctor_id INT REFERENCES doctor(doctor_id),
-	ssn VARCHAR(11) REFERENCES patient(ssn),
-	medication_id INT REFERENCES medication(medication_id),
+	patient_id INT REFERENCES patient(patient_id),
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	employee_id INT REFERENCES employee(employee_id),
-	drug_name VARCHAR(50),
 	date_issued DATE,
-	expiration_date DATE,
 	quantity INT,
-	dosage VARCHAR(20),
-	refills INT
+	refills INT,
+	directions VARCHAR(100),
+	days_supply INT
 );
 		
 -- Inventory
 CREATE TABLE inventory(
 	inventory_id SERIAL PRIMARY KEY,
-	medication_id INT REFERENCES medication(medication_id),
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
 	employee_id INT REFERENCES employee(employee_id),
 	quantity INT,
 	reorder_date DATE,
@@ -80,8 +79,8 @@ CREATE TABLE inventory(
 -- Supplier
 CREATE TABLE supplier(
 	supplier_id SERIAL PRIMARY KEY,
-	medication_id INT REFERENCES medication(medication_id),
-	tote_id INT,
+	medication_id VARCHAR(13) REFERENCES medication(medication_id),
+	tote_id VARCHAR(8),
 	company_name VARCHAR(50),
 	employee_id INT REFERENCES employee(employee_id),
 	contact_name VARCHAR(50),
@@ -92,8 +91,6 @@ CREATE TABLE supplier(
 -- Sales Transaction
 CREATE TABLE sales_transaction(
 	transaction_id SERIAL PRIMARY KEY,
-	ssn VARCHAR(11) REFERENCES patient(ssn),
-	medication_id INT REFERENCES medication(medication_id),
 	prescription_id INT REFERENCES prescription(prescription_id),
 	employee_id INT REFERENCES employee(employee_id),
 	transaction_date DATE,
@@ -110,7 +107,7 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
  	('401-56-3099', 'Liam', 'Carter', '1988-01-15', '214-555-4101', '742 Maple St, Dallas, TX', 'Hypertension', 'Aetna'),
     ('523-62-9443', 'Emma', 'Nguyen', '1995-06-22', '469-555-4102', '88 Oak Ave, Plano, TX', 'None', 'Cigna'),
     ('633-75-4196', 'Noah', 'Patel', '1979-03-11', '972-555-4103', '15 Cedar Dr, Irving, TX', 'Asthma', 'BCBS'),
-    ('748-89-3063', 'Olivia', 'Garcia', '2001-09-09', '214-555-4104', '203 Pine St, Richardson, TX', 'None', 'UHC'),
+    ('748-89-3063', 'Olivia', 'Garcia', '2001-09-09', '214-555-4104', '203 Pine St, Richardson, TX', 'Depression', 'UHC'),
     ('854-90-3354', 'Elijah', 'Kim', '1965-12-30', '469-555-4105', '55 Lake Blvd, Garland, TX', 'Diabetes', 'Medicare'),
 	('961-01-4106', 'Ava', 'Lopez', '1992-07-18', '972-555-4106', '77 Ridge Rd, Frisco, TX', 'None', 'CHRISTUS'),
 	('177-12-7708', 'William', 'Singh', '1980-02-02', '214-555-4107', '102 Elm St, Addison, TX', 'Arthritis', 'Cigna'),
@@ -156,7 +153,7 @@ INSERT INTO patient (ssn, fname, lname, dob, phone, address, medical_history, in
 	('538-58-6260', 'Lily', 'Bailey', '1997-09-29', '972-555-4145', '7000 Greenville Ave, Dallas, TX', 'None', 'Cigna'),
 	('645-24-4146', 'James', 'Hughes', '1983-11-11', '214-555-4146', '3300 Mockingbird Ln, Dallas, TX', 'Diabetes', 'BCBS'),
 	('752-06-1950', 'Amelia', 'Ward', '1994-02-06', '469-555-4147', '4100 Main St, Richardson, TX', 'None', 'UHC'),
-	('867-90-2801', 'Benjamin', 'Brooks', '1979-07-18', '972-555-4148', '1500 Legacy Dr, Plano, TX', 'Arthritis', 'Medicare'),
+	('867-90-2801', 'Benjamin', 'Brooks', '1979-07-18', '972-555-4148', '1500 Legacy Dr, Plano, TX', 'Arthritis, Depression', 'Medicare'),
 	('971-66-0877', 'Harper', 'Sanders', '1996-04-25', '214-555-4149', '900 Main St, Dallas, TX', 'None', 'Ambetter'),
 	('182-38-1793', 'Lucas', 'Price', '1988-08-08', '469-555-4150', '2300 Preston Rd, Frisco, TX', 'Asthma', 'Cigna'),
 	('295-19-5184', 'Evelyn', 'Long', '1969-01-17', '972-555-4151', '7800 Coit Rd, Plano, TX', 'COPD', 'Medicare'),
@@ -215,31 +212,211 @@ INSERT INTO employee (fname, lname, dob, phone, address, role) VALUES
 	('Morgan', 'Patel', '1992-09-30', '214-555-4459', '3218 Cedar Blvd, Garland, TX', 'Technician'),
 	('Casey', 'Johnson', '1985-01-17', '469-555-8823', '87 Birch Ln, Irving, TX', 'Pharmacist'),
 	('Riley', 'Smith', '1991-07-25', '972-555-1290', '9124 Spruce Dr, Carrollton, TX', 'Pharmacist');
-	
+
 -- Doctors
 INSERT INTO doctor (fname, lname, specialty, phone, license_num) VALUES
+	('John', 'Smith', 'Cardiology', '972-948-0198', '1029303942'),
+	('Mark', 'Andrews', 'Neurology', '214-028-8394', '0192839451'),
+	('Allison', 'Martinez', 'Pediatrics', '469-583-9945', '9384938492'),
+	('Lucas', 'Long', 'Gastroenterology', '293-398-1923', '4873917384'),
+	('Wendy', 'Pearl', 'General Practioner', '918-456-1928', '7483291832'),
+	('Robin', 'Nico', 'Psychiatry', '303-294-9019', '0382933921');
 
 -- Medications
-INSERT INTO medication (name, strength, dosage) VALUES
+INSERT INTO medication (medication_id, name, strength, dosage_form) VALUES
+	('40134-5029-01','alprazolam', '0.25mg', 'tablet'),
+	('40134-5029-02','alprazolam', '0.5mg', 'tablet'),
+	('40134-5029-03','alprazolam', '1.0mg', 'tablet'),
+	('15245-9586-01','clonazepam', '0.5mg', 'tablet'),
+	('15245-9586-02','clonazepam', '1mg', 'tablet'),
+	('15245-9586-03','clonazepam', '2mg', 'tablet'),
+	('83457-1029-01','fluoxetine', '10mg', 'tablet'),
+	('83457-1029-02','fluoxetine', '20mg', 'tablet'),
+	('83457-1029-03','fluoxetine', '10mg', 'capsule'),
+	('83457-1029-04','fluoxetine', '20mg', 'capsule'),
+	('83457-1029-05','fluoxetine', '40mg', 'capsule'),
+	('03925-3859-01','escitalopram', '5mg', 'tablet'),
+	('03925-3859-02','escitalopram', '10mg', 'tablet'),
+	('03925-3859-03','escitalopram', '20mg', 'tablet'),
+	('95738-1456-01','acetaminophen with codeine #2', '300mg-15mg', 'tablet'),
+	('95738-1456-02','acetaminophen with codeine #3', '300mg-30mg', 'tablet'),
+	('95738-1456-03','acetaminophen with codeine #4', '300mg-60mg', 'tablet'),
+	('76319-2947-01','buprenorphine and nalaxone', '8mg-2mg', 'tablet'),
+	('76319-2947-02','buprenorphine and nalaxone', '4mg-1mg', 'tablet'),
+	('28573-1947-01','sertraline', '25mg', 'tablet'),
+	('28573-1947-02','sertraline', '50mg', 'tablet'),
+	('28573-1947-03','sertraline', '100mg', 'tablet'),
+	('10459-1983-01','amoxicillin', '250mg', 'tablet'),
+	('10459-1983-02','amoxicillin', '500mg', 'tablet'),
+	('10459-1983-03','amoxicillin', '250mg', 'capsule'),
+	('10459-1983-04','amoxicillin', '500mg', 'capsule'),
+	('28395-0395-01','ondansetron', '4mg', 'tablet'),
+	('28395-0395-02','ondansetron', '8mg', 'tablet'),
+	('57294-3948-01','warfarin sodium', '1mg', 'tablet'),
+	('57294-3948-02','warfarin sodium', '2mg', 'tablet'),
+	('57294-3948-03','warfarin sodium', '3mg', 'tablet'),
+	('01924-3958-01','tadalafil', '5mg', 'tablet'),
+	('01924-3958-02','tadalafil', '10mg', 'tablet'),
+	('01924-3958-03','tadalafil', '20mg', 'tablet'),
+	('65839-3849-01','telmisartan', '20mg', 'tablet'),
+	('65839-3849-02','telmisartan', '40mg', 'tablet'),
+	('65839-3849-03','telmisartan', '80mg', 'tablet'),
+	('11957-9284-01','levothyroxine', '25mcg', 'tablet'),
+	('11957-9284-02','levothyroxine', '50mcg', 'tablet'),
+	('11957-9284-03','levothyroxine', '75mcg', 'tablet'),
+	('11957-9284-04','levothyroxine', '88mcg', 'tablet'),
+	('11957-9284-05','levothyroxine', '100mcg', 'tablet'),
+	('09483-8473-01','lamotrigine', '25mg', 'tablet'),
+	('09483-8473-02','lamotrigine', '50mg', 'tablet'),
+	('09483-8473-03','lamotrigine', '75mg', 'tablet'),
+	('09483-8473-04','lamotrigine', '100mg', 'tablet'),
+	('83792-0193-01','mirtazapine', '15mg', 'tablet'),
+	('83792-0193-02','mirtazapine', '30mg', 'tablet'),
+	('83792-0193-03','mirtazapine', '45mg', 'tablet'),
+	('93847-9473-01','levofloxacin', '250mg', 'tablet'),
+	('93847-9473-02','levofloxacin', '500mg', 'tablet'),
+	('93847-9473-03','levofloxacin', '750mg', 'tablet'),
+	('84792-1945-01','furosemide', '20mg', 'tablet'),
+	('84792-1945-02','furosemide', '40mg', 'tablet'),
+	('84792-1945-03','furosemide', '80mg', 'tablet'),
+	('42812-0839-01','lisinopril', '10mg', 'tablet'),
+	('42812-0839-02','lisinopril', '20mg', 'tablet'),
+	('88732-0189-01','losartan', '25mg', 'tablet'),
+	('88732-0189-02','losartan', '50mg', 'tablet'),
+	('88732-0189-03','losartan', '100mg', 'tablet'),
+	('75493-9378-01','atorvastatin', '10mg', 'tablet'),
+	('75493-9378-02','atorvastatin', '20mg', 'tablet'),
+	('75493-9378-03','atorvastatin', '40mg', 'tablet'),
+	('89102-0389-01','cefdinir', '300mg', 'capsule'),
+	('89102-0389-02','cephalexin', '250mg', 'tablet'),
+	('89102-0389-03','cephalexin', '500mg', 'tablet'),
+	('89102-0389-04','cephalexin', '250mg', 'capsule'),
+	('89102-0389-05','cephalexin', '500mg', 'capsule'),
+	('27362-0830-01','pantoprazole', '20mg', 'tablet'),
+	('27362-0830-02','pantoprazole', '40mg', 'tablet'),
+	('00198-4739-01','omeprazole', '20mg', 'capsule'),
+	('00198-4739-02','omeprazole', '40mg', 'capsule');
 
--- Prescriptions
-INSERT INTO prescription (doctor_id, ssn, medication_id, employee_id, drug_name, date_issued, expiration_date, quantity, dosage, refills) VALUES
+-- Prescriptions 20
+INSERT INTO prescription (doctor_id, patient_id, medication_id, employee_id, date_issued, quantity, refills, directions, days_supply) VALUES
+	(3, 4, '83457-1029-05', 5, '2026-05-18', 30, 2, 'Take 1 capsule daily', 30),
+	(6, 5, '40134-5029-03', 6, '2026-06-27', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 51, '40134-5029-02', 6, '2025-11-21', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(6, 86, '40134-5029-01', 6, '2026-02-13', 20, 1, 'Take 1 tablet as needed for anxiety', 20),
+	(5, 2, '10459-1983-02', 5, '2026-07-11', 21, 0, 'Take 1 tablet three times daily', 7),
+	(2, 15, '03925-3859-03', 6, '2026-05-29', 30, 1, 'Take 1 tablet daily', 30),
+	(6, 7, '28573-1947-03', 5, '2026-06-14', 60, 2, 'Take 1 tablet daily', 60),
+	(4, 12, '57294-3948-01', 6, '2026-07-02', 30, 1, 'Take 1 tablet daily', 30),
+	(1, 18, '42812-0839-02', 5, '2026-05-21', 90, 2, 'Take 1 tablet daily', 90),
+	(3, 5, '95738-1456-02', 6, '2026-06-09', 15, 0, 'Take 1 tablet every 6 hours as needed', 5),
+	(2, 11, '01924-3958-02', 5, '2026-07-15', 10, 0, 'Take 1 tablet as needed', 10),
+	(5, 6, '76319-2947-01', 6, '2026-05-26', 30, 2, 'Take 1 tablet daily', 30),
+	(4, 13, '11957-9284-03', 5, '2026-06-30', 90, 3, 'Take 1 tablet daily before breakfast', 90),
+	(6, 10, '84792-1945-03', 6, '2026-07-08', 30, 1, 'Take 1 tablet daily', 30),
+	(1, 3, '15245-9586-01', 5, '2026-05-24', 60, 1, 'Take 1 tablet twice daily', 30),
+	(3, 8, '28395-0395-02', 6, '2026-06-19', 20, 1, 'Take 1 tablet as needed for nausea', 5),
+	(2, 16, '93847-9473-02', 5, '2026-07-01', 10, 0, 'Take 1 tablet daily', 10),
+	(5, 1, '65839-3849-03', 6, '2026-05-30', 30, 2, 'Take 1 tablet daily', 30),
+	(4, 14, '09483-8473-02', 5, '2026-06-12', 60, 1, 'Take 1 tablet twice daily', 30),
+	(6, 17, '83792-0193-01', 6, '2026-07-20', 30, 2, 'Take 1 tablet at bedtime', 30),
+	(1, 19, '88732-0189-03', 5, '2026-06-03', 30, 2, 'Take 1 tablet daily', 30),
+	(2, 20, '75493-9378-02', 6, '2026-07-17', 30, 1, 'Take 1 tablet at bedtime', 30);
 
 -- Inventory
 INSERT INTO inventory (medication_id, employee_id, quantity, reorder_date, expiration_date) VALUES
+	('40134-5029-03', 2, 145, '2026-06-02', '2028-03-11'),
+	('15245-9586-01', 3, 182, '2026-07-06', '2027-11-25'),
+	('83457-1029-03', 1, 210, '2026-07-09', '2029-01-14'),
+	('83457-1029-05', 4, 167, '2026-06-11', '2028-07-03'),
+	('03925-3859-03', 5, 198, '2026-05-13', '2027-12-09'),
+	('95738-1456-02', 6, 123, '2026-06-16', '2028-02-17'),
+	('76319-2947-01', 1, 205, '2026-06-18', '2029-05-22'),
+	('28573-1947-03', 2, 234, '2026-05-21', '2027-10-30'),
+	('10459-1983-02', 3, 190, '2026-06-23', '2028-06-19'),
+	('10459-1983-03', 4, 222, '2026-06-24', '2029-03-07'),
+	('28395-0395-02', 5, 140, '2026-05-26', '2027-08-15'),
+	('57294-3948-01', 6, 176, '2026-05-29', '2028-09-28'),
+	('01924-3958-02', 1, 214, '2026-06-02', '2029-02-12'),
+	('65839-3849-03', 2, 168, '2026-07-05', '2027-11-03'),
+	('11957-9284-03', 3, 245, '2026-06-08', '2028-12-21'),
+	('11957-9284-04', 4, 201, '2026-07-09', '2029-04-18'),
+	('09483-8473-01', 5, 183, '2026-06-11', '2027-07-27'),
+	('09483-8473-02', 6, 229, '2026-05-12', '2028-10-05'),
+	('83792-0193-01', 1, 157, '2026-07-14', '2029-06-11'),
+	('93847-9473-02', 2, 219, '2026-05-16', '2028-01-30'),
+	('84792-1945-03', 3, 132, '2026-05-18', '2027-09-09'),
+	('42812-0839-02', 4, 248, '2026-07-21', '2029-03-25'),
+	('88732-0189-03', 5, 171, '2026-06-23', '2028-05-14'),
+	('75493-9378-02', 6, 206, '2026-05-25', '2027-12-31'),
+	('89102-0389-01', 2, 128, '2026-06-17', '2028-02-11'),
+	('89102-0389-03', 3, 241, '2026-06-11', '2028-01-12'),
+	('27362-0830-02', 1, 163, '2026-05-17', '2027-07-02'),
+	('00198-4739-01', 1, 195, '2026-05-28', '2027-03-21');
 
 -- Suppliers
 INSERT INTO supplier (medication_id, tote_id, company_name, employee_id, contact_name, contact_phone, status) VALUES
+	('40134-5029-03', '482-1937', 'McKesson', 1, 'David Turner', '214-683-6001', 'Active'),
+	('83457-1029-05', '739-2846', 'Cardinal Health', 2, 'Samantha Lee', '469-742-6002', 'Active'),
+	('10459-1983-02', '156-9921', 'AmerisourceBergen', 3, 'Brian Scott', '972-318-6003', 'Active'),
+	('03925-3859-03', '883-4407', 'Henry Schein', 4, 'Laura Adams', '214-529-6004', 'Inactive'),
+	('28573-1947-03', '295-7710', 'McKesson', 5, 'Kevin Brooks', '469-861-6005', 'Active'),
+	('57294-3948-01', '641-5523', 'Cardinal Health', 6, 'Rachel Green', '972-447-6006', 'Active'),
+	('42812-0839-02', '907-3186', 'AmerisourceBergen', 1, 'Jason Miller', '214-395-6007', 'Active'),
+	('76319-2947-01', '214-8805', 'Henry Schein', 2, 'Emily Clark', '469-726-6008', 'Inactive'),
+	('11957-9284-03', '568-1294', 'McKesson', 3, 'Andrew White', '972-583-6009', 'Active'),
+	('09483-8473-02', '732-6651', 'Cardinal Health', 4, 'Olivia Harris', '214-914-6010', 'Active');
 
 -- Sales Transactions
-INSERT INTO sales_transaction (ssn, medication_id, prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
+INSERT INTO sales_transaction (prescription_id, employee_id, transaction_date, payment_type, total_amount, receipt_number) VALUES
+	(3, 2, '2026-07-13', 'Insurance', 13.25, 101),
+	(14, 3, '2026-06-18', 'Card', 26.40, 102),
+	(1, 1, '2026-05-21', 'Cash', 24.99, 103),
+	(9, 6, '2026-07-19', 'Card', 21.75, 104),
+	(7, 5, '2026-05-25', 'Insurance', 19.80, 105),
+	(12, 6, '2026-07-10', 'Cash', 17.60, 106),
+	(5, 4, '2026-06-17', 'Card', 28.50, 107),
+	(18, 4, '2026-07-22', 'Insurance', 22.90, 108),
+	(10, 2, '2026-05-29', 'Cash', 30.00, 109),
+	(2, 5, '2026-06-30', 'Card', 18.75, 110);
 
 -- QUERIES -------------------------------
+SELECT patient_id, fname, lname, medical_history
+FROM patient
+WHERE medical_history ILIKE '%diabetes%';
 
-/* To test tables 
-SELECT *
-FROM patient;
+SELECT fname, lname, medical_history
+FROM patient
+WHERE medical_history = 'Diabetes';
 
 SELECT *
-FROM employee;
-*/
+FROM prescription
+WHERE date_issued < '2026-06-01';
+
+SELECT * 
+FROM employee
+WHERE role = 'Technician';
+
+SELECT * 
+FROM doctor
+WHERE specialty = 'Neurology';
+
+SELECT *
+FROM inventory
+WHERE quantity < '150';
+
+SELECT 'Dr. ' || d.lname AS doctor, p.patient_id, m.name AS medication
+FROM doctor d
+JOIN prescription p ON d.doctor_id = p.patient_id
+JOIN medication m ON p.medication_id = m.medication_id
+
+SELECT d.fname, d.lname, COUNT(p.prescription_id) AS total_prescriptions
+FROM doctor d
+JOIN prescription p ON d.doctor_id = p.doctor_id
+GROUP BY d.doctor_id;
+
+SELECT m.name, COUNT(*) AS times_prescribed
+FROM prescription p
+JOIN medication m ON p.medication_id = m.medication_id
+GROUP BY m.name
+ORDER BY times_prescribed DESC
+LIMIT 1;
