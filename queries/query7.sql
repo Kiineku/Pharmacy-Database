@@ -1,5 +1,6 @@
--- Query 7: Counts total number of prescriptions written by each doctor
-SELECT d.fname, d.lname, COUNT(p.prescription_id) AS total_prescriptions
-FROM doctor d
-JOIN prescription p ON d.doctor_id = p.doctor_id
-GROUP BY d.doctor_id;
+-- Query 7: Counts total number of prescriptions per patient
+SELECT p.patient_id, p.fname || ' ' || p.lname as patient_name, COUNT(pr.prescription_id) AS total_prescriptions
+FROM patient p
+LEFT JOIN prescription pr ON p.patient_id = pr.patient_id
+GROUP BY p.patient_id, p.fname, p.lname
+ORDER BY total_prescriptions DESC;
